@@ -17,3 +17,8 @@ app = flask.Flask(__name__, template_folder='views')
 @app.route('/')
 def home():
     return flask.render_template('index.html')
+
+
+@app.route('/add')
+def add():
+    return flask.render_template('add.html')
