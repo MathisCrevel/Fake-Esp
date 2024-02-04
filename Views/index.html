@@ -28,30 +28,26 @@
                 </tr>
                 </thead>
                 <tbody>
-
-                <!-- On boucle sur la variable "dogs" -->
                 {% for dog in dogs %}
                     <tr>
-                        <!-- On affiche les données dynamiquement -->
+                        
                         <td class="border py-2 px-4">{{ dog.id }}</td>
                         <td class="border py-2 px-4">{{ dog.name }}</td>
                         <td class="border py-2 px-4">{{ dog.age }}</td>
                         <td class="border py-2 px-4">{{ dog.race }}</td>
                         <td class="border py-2 px-4">
-
-                            <!-- On ajoute un bouton pour supprimer la donnée sur la route /delete/<id> -->
                             <a href="/delete/{{dog.id}}">
                                 <button class="bg-red-500 text-white py-1 px-2 rounded w-full">Delete</button>
                             </a>
                         </td>
                     </tr>
                 {% endfor %}    
-
+        
                 </tbody>
             </table>
         </div>
 
-
+        
     </section>
 </body>
 </html>
