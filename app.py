@@ -7,7 +7,7 @@ import os
 connection = sqlite3.connect('data.db')
 
 cursor = connection.cursor()
-cursor.execute('CREATE TABLE IF NOT EXISTS Fake_Releve (id INTEGER PRIMARY KEY, name TEXT, age INTEGER, race TEXT)')
+cursor.execute('CREATE TABLE IF NOT EXISTS dogs (id INTEGER PRIMARY KEY, name TEXT, age INTEGER, race TEXT)')
 connection.commit()
 connection.close()
 
