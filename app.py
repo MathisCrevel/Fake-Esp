@@ -5,7 +5,23 @@ app = flask.Flask(__name__, template_folder='views')
 
 @app.route('/')
 def home():
-       return flask.render_template('index.html')
+   connection = sqlite3.connect('data.db')
+   cursor = connection.cursor()
+   cursor.execute('SELECT * FROM dogs')
+   dogs = cursor.fetchall()
+   connection.close()
+
+   list_dogs = []
+
+   for dog in dogs:
+      list_dogs.append({
+         "id": dog[0],
+         "name": dog[1],
+         "age": dog[2],
+         "race": dog[3],
+      }) 
+
+   return flask.render_template('index.html', dogs=list_dogs)
 
 @app.route('/add')
 def add():
