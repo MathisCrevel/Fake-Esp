@@ -21,4 +21,18 @@ def home():
 
 @app.route('/add')
 def add():
-    return flask.render_template('add.html')
+        if flask.request.method == 'POST':
+            name = flask.request.values.get('name')
+            age = flask.request.values.get('age')
+            race = flask.request.values.get('race')
+
+            connection = sqlite3.connect('data.db')
+
+            cursor = connection.cursor()
+            cursor.execute('INSERT INTO dogs (name, age, race) VALUES ("' + name + '", "' + age + '", "' + race + '")')
+            connection.commit()
+            connection.close()
+
+            return flask.redirect('/')
+        else:
+            return flask.render_template('add.html')
