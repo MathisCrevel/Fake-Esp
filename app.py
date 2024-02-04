@@ -3,33 +3,37 @@ import sqlite3
 
 app = flask.Flask(__name__, template_folder='views')
 
-connection = sqlite3.connect('data.db')
+connection = sqlite3.connect('Fake_StationMeteo.db')
 
 cursor = connection.cursor()
-cursor.execute('CREATE TABLE IF NOT EXISTS dogs (id INTEGER PRIMARY KEY, name TEXT, age INTEGER, race TEXT)')
+cursor.execute('CREATE TABLE IF NOT EXISTS Fake_Sonde (id_FakeSonde INTEGER PRIMARY KEY, name_Sonde TEXT);')
 connection.commit()
 connection.close()
 
+cursor = connection.cursor()
+cursor.execute('CREATE TABLE IF NOT EXISTS Fake_Releve (id_FakeReleve INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Fake_temp FLOAT , Fake_humidite FLOAT, Fake_pression FLOAT);')
+connection.commit()
+connection.close()
 
 @app.route('/')
 def home():
    connection = sqlite3.connect('data.db')
    cursor = connection.cursor()
-   cursor.execute('SELECT * FROM dogs')
-   dogs = cursor.fetchall()
+   cursor.execute('SELECT Fake_temp, Fake_humidite, Fake_pression FROM Fake_Releve ORDER BY id_FakeReleve DESC LIMIT 1;')
+   Fake_Releve = cursor.fetchall()
    connection.close()
 
-   list_dogs = []
+   list_releve = []
 
-   for dog in dogs:
-      list_dogs.append({
-         "id": dog[0],
-         "name": dog[1],
-         "age": dog[2],
-         "race": dog[3],
+   for releve in Fake_Releve:
+      list_releve.append({
+         "id": releve[0],
+         "temp": releve[1],
+         "humidite": releve[2],
+         "pression": releve[3],
       }) 
 
-   return flask.render_template('index.html', dogs=list_dogs)
+   return flask.render_template('index.html', releve=list_releve)
 
 
 # Faire un form pour add
