@@ -4,6 +4,12 @@ import json
 import datetime
 import os
 
+connection = sqlite3.connect('data.db')
+
+cursor = connection.cursor()
+cursor.execute('CREATE TABLE IF NOT EXISTS Fake_Releve (id INTEGER PRIMARY KEY, name TEXT, age INTEGER, race TEXT)')
+connection.commit()
+connection.close()
 
 
 app = flask.Flask(__name__, template_folder='views')
