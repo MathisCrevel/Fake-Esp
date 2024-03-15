@@ -9,25 +9,17 @@
 <body class="bg-teal-50 w-screen flex flex-col gap-4 justify-center py ">
     <section class="px-8 md:px-32 mt-16 w-full flex flex-col gap-2">
         <h1 class="text-3xl text-teal-900 font-bold">
-            Ajouter un <span class="text-teal-500">chien</span>
+            Ajouter une <span class="text-teal-500">Sonde</span>
         </h1>
         <a class="underline opacity-20" href="/">Retour</a>
 
-        <!-- form with 3 inputs (name, age, race) -->
+    
         <form method="POST" action="/add" 
             class="flex flex-col gap-4 mt-4 w-full md:w-1/2 mx-auto"
         >
             <div class="flex flex-col gap-1">
-                <label for="name" class="text-xl text-teal-900 font-bold">Nom</label>
-                <input type="text" name="name" id="name" class="bg-white border border-teal-200 focus:border-teal-500 focus:outline-none px-2 py-1 rounded-lg">
-            </div>
-            <div class="flex flex-col gap-1">
-                <label for="age" class="text-xl text-teal-900 font-bold">Age</label>
-                <input type="number" name="age" id="age" class="bg-white border border-teal-200 focus:border-teal-500 focus:outline-none px-2 py-1 rounded-lg">
-            </div>
-            <div class="flex flex-col gap-1">
-                <label for="race" class="text-xl text-teal-900 font-bold">Race</label>
-                <input type="text" name="race" id="race" class="bg-white border border-teal-200 focus:border-teal-500 focus:outline-none px-2 py-1 rounded-lg">
+                <label for="nom" class="text-xl text-teal-900 font-bold">Nom</label>
+                <input type="text" name="nom" id="nom" class="bg-white border border-teal-200 focus:border-teal-500 focus:outline-none px-2 py-1 rounded-lg">
             </div>
 
             <button type="submit" class="bg-teal-500 hover:bg-teal-600 text-white font-bold px-4 py-2 rounded-lg">

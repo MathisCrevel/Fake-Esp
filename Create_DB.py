@@ -2,7 +2,7 @@ import sqlite3
 
 #Établir une connexion à la base de données
 #et créer un objet de connexion
-connection = sqlite3.connect('Station_meteof.db')
+connection = sqlite3.connect('Fake_StationMeteo.db')
 
 #Créer un curseur vers la base de données
 cursor = connection.cursor()
@@ -21,7 +21,6 @@ connection.commit()
 #Création de la table "Fake_Relevé"
 cursor.execute ("""CREATE TABLE IF NOT EXISTS Fake_Releve(
                 id_Fake_releve INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                date_releve DATETIME NOT NULL,
                 Fake_temp FLOAT NOT NULL,
                 Fake_humidite FLOAT NOT NULL,
                 Fake_pression FLOAT NOT NULL,
@@ -31,7 +30,8 @@ cursor.execute ("""CREATE TABLE IF NOT EXISTS Fake_Releve(
 """)
 
 connection.commit()
-
+cursor.execute("""INSERT INTO Fake_Releve(Fake_temp, Fake_humidite, Fake_pression) values(22, 2, 2)""")
+connection.commit()
 #Supression de la ligne qui a pour pour resultat "2" dans la colonne "id_Sonde" dans la table "Sonde"  
 """cursor.execute (""""""DELETE FROM Sonde WHERE id_Sonde = 2"""""")
 

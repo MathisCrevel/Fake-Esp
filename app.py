@@ -6,9 +6,9 @@ app = flask.Flask(__name__, template_folder='views')
 connection = sqlite3.connect('Fake_StationMeteo.db')
 
 cursor = connection.cursor()
-cursor.execute('CREATE TABLE IF NOT EXISTS Fake_Sonde (id_FakeSonde INTEGER PRIMARY KEY, name_Sonde TEXT);')
-connection.commit()
-connection.close()
+cursor.execute('CREATE TABLE IF NOT EXISTS Fake_Sonde (id_FakeSonde INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name_Sonde TEXT NOT NULL);')
+
+
 
 cursor = connection.cursor()
 cursor.execute('CREATE TABLE IF NOT EXISTS Fake_Releve (id_FakeReleve INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Fake_temp FLOAT , Fake_humidite FLOAT, Fake_pression FLOAT);')
@@ -17,10 +17,12 @@ connection.close()
 
 @app.route('/')
 def home():
-   connection = sqlite3.connect('data.db')
+   connection = sqlite3.connect('Fake_StationMeteo.db')
    cursor = connection.cursor()
-   cursor.execute('SELECT Fake_temp, Fake_humidite, Fake_pression FROM Fake_Releve ORDER BY id_FakeReleve DESC LIMIT 1;')
+   cursor.execute('SELECT id_FakeReleve, Fake_temp, Fake_humidite, Fake_pression FROM Fake_Releve ORDER BY id_FakeReleve DESC LIMIT 1;')
    Fake_Releve = cursor.fetchall()
+   cursor.execute('SELECT * FROM Fake_Sonde ORDER BY id_FakeSonde DESC LIMIT 1;')
+   Fake_Sonde = cursor.fetchall()
    connection.close()
 
    list_releve = []
@@ -33,21 +35,26 @@ def home():
          "pression": releve[3],
       }) 
 
-   return flask.render_template('index.html', releve=list_releve)
+   list_sonde = []
+   for sonde in Fake_Sonde:
+      list_sonde.append({
+      "id": sonde[0],
+      "nom": sonde[1]
+      })
+
+   return flask.render_template('index.html', releve=list_releve, sonde=list_sonde)
 
 
 # Faire un form pour add
 @app.route('/add', methods=['GET', 'POST'])
 def add():
    if flask.request.method == 'POST':
-      name = flask.request.values.get('name')
-      age = flask.request.values.get('age')
-      race = flask.request.values.get('race')
-
-      connection = sqlite3.connect('data.db')
+      name = flask.request.values.get('nom')
+      
+      connection = sqlite3.connect('Fake_StationMeteo.db')
 
       cursor = connection.cursor()
-      cursor.execute('INSERT INTO dogs (name, age, race) VALUES ("' + name + '", "' + age + '", "' + race + '")')
+      cursor.execute('INSERT INTO Fake_Sonde (name_Sonde) VALUES (?)',(name,))
       connection.commit()
       connection.close()
 
@@ -55,21 +62,31 @@ def add():
    else:
       return flask.render_template('add.html')
 
-@app.route('/delete/<id>')
-def delete(id):
-   connection = sqlite3.connect('data.db')
+@app.route('/delete_Releve/<id>')
+def delete_Releve(id):
+   connection = sqlite3.connect('Fake_StationMeteo.db')
 
    cursor = connection.cursor()
-   cursor.execute('DELETE FROM dogs WHERE id = ' + id)
+   cursor.execute('DELETE FROM Fake_Releve WHERE id_FakeReleve = ' + id)
    connection.commit()
    connection.close()
 
    return flask.redirect('/')
 
+@app.route('/delete_Sonde/<id>')
+def delete_Sonde(id):
+   connection = sqlite3.connect('Fake_StationMeteo.db')
+
+   cursor = connection.cursor()
+   cursor.execute('DELETE FROM Fake_Sonde WHERE id_FakeSonde = ' + id)
+   connection.commit()
+   connection.close()
+
+   return flask.redirect('/')
 
 @app.route('/api/dogs', methods=['GET'])
 def get_dogs():
-   connection = sqlite3.connect('data.db')
+   connection = sqlite3.connect('Fake_StationMeteo.db')
    cursor = connection.cursor()
    cursor.execute('SELECT * FROM dogs')
    dogs = cursor.fetchall()
@@ -96,7 +113,7 @@ def add_dog():
       race = flask.request.json['race']
 
 
-      connection = sqlite3.connect('data.db')
+      connection = sqlite3.connect('Fake_StationMeteo.db')
 
       cursor = connection.cursor()
       cursor.execute('INSERT INTO dogs (name, age, race) VALUES ("' + name + '", "' + str(age) + '", "' + race + '")')
