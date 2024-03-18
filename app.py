@@ -12,7 +12,14 @@ cursor.execute('CREATE TABLE IF NOT EXISTS Fake_Sonde (id_FakeSonde INTEGER PRIM
 
 
 cursor = connection.cursor()
-cursor.execute('CREATE TABLE IF NOT EXISTS Fake_Releve (id_FakeReleve INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Fake_temp FLOAT , Fake_humidite FLOAT, Fake_pression FLOAT);')
+cursor.execute("""CREATE TABLE IF NOT EXISTS Fake_Releve( 
+               id_FakeReleve INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+               Fake_temp FLOAT,
+               Fake_humidite FLOAT,
+               Fake_pression FLOAT,
+               id_Sonde INTEGER NOT NULL, 
+               FOREIGN KEY(id_Sonde) REFERENCES Fake_Sonde(id_Sonde));"""
+               )
 connection.commit()
 connection.close()
 
@@ -66,15 +73,21 @@ def add():
 @app.route('/add/releve', methods=['GET', 'POST'])
 def add_releve():
    if flask.request.method == 'POST':
-      name = flask.request.values.get('releves')
-      name = flask.request.values.get('Sonde')
-      
+
       connection = sqlite3.connect('Fake_StationMeteo.db')
 
-      cursor = connection.cursor()
-      cursor.execute('INSERT INTO Fake_Releve (Fake_temp) VALUES (?)',(name,))
-      connection.commit()
-      connection.close()
+      nb_releves = flask.request.values.get('releves')
+      id_Sonde = flask.request.values.get('Sonde')
+      
+      for i in range(len(nb_releves)):
+         temp = randint(-10, 50)
+         humidite = randint(0, 100)
+         pression = randint(1000, 1050)
+
+         cursor = connection.cursor()
+         cursor.execute('INSERT INTO Fake_Releve (Fake_temp, Fake_humidite, Fake_pression) VALUES (?,?,?)',(temp, humidite, pression))
+         connection.commit()
+         connection.close()
 
       return flask.redirect('/')
    else:
