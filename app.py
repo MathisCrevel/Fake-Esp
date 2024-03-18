@@ -1,5 +1,6 @@
 import flask
 import sqlite3
+from random import randint
 
 app = flask.Flask(__name__, template_folder='views')
 
@@ -46,7 +47,7 @@ def home():
 
 
 # Faire un form pour add
-@app.route('/add', methods=['GET', 'POST'])
+@app.route('/add/sonde', methods=['GET', 'POST'])
 def add():
    if flask.request.method == 'POST':
       name = flask.request.values.get('nom')
@@ -61,6 +62,23 @@ def add():
       return flask.redirect('/')
    else:
       return flask.render_template('add.html')
+
+@app.route('/add/releve', methods=['GET', 'POST'])
+def add_releve():
+   if flask.request.method == 'POST':
+      name = flask.request.values.get('releves')
+      name = flask.request.values.get('Sonde')
+      
+      connection = sqlite3.connect('Fake_StationMeteo.db')
+
+      cursor = connection.cursor()
+      cursor.execute('INSERT INTO Fake_Releve (Fake_temp) VALUES (?)',(name,))
+      connection.commit()
+      connection.close()
+
+      return flask.redirect('/')
+   else:
+      return flask.render_template('releve.html')
 
 @app.route('/delete_Releve/<id>')
 def delete_Releve(id):
@@ -107,7 +125,6 @@ def get_dogs():
 @app.route('/api/dogs', methods=['POST'])
 def add_dog():
    if flask.request.method == 'POST':
-      # get data from request body
       name = flask.request.json['name']
       age = flask.request.json['age']
       race = flask.request.json['race']
@@ -123,5 +140,3 @@ def add_dog():
       return flask.jsonify({
          "message": "Dog added successfully"
       })
-# CRM (Postman) qui communique depuis l'extérieur en API REST via JSON sur le serveur Flask pour add et lister des chiens/clients
-# le même serveur Flask affiche et add des données en MVC via les templates/views avec données dynamiques
