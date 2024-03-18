@@ -77,9 +77,9 @@ def add_releve():
       connection = sqlite3.connect('Fake_StationMeteo.db')
 
       nb_releves = flask.request.values.get('releves')
-      id_Sonde = flask.request.values.get('Sonde')
+      id_Sonde = flask.request.values.get('sonde')
       
-      for i in range(len(nb_releves)):
+      for i in range(nb_releves):
          temp = randint(-10, 50)
          humidite = randint(0, 100)
          pression = randint(1000, 1050)
