@@ -7,7 +7,10 @@ app = flask.Flask(__name__, template_folder='views')
 connection = sqlite3.connect('Fake_StationMeteo.db')
 
 cursor = connection.cursor()
-cursor.execute('CREATE TABLE IF NOT EXISTS Fake_Sonde (id_FakeSonde INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name_Sonde TEXT NOT NULL);')
+cursor.execute("""CREATE TABLE IF NOT EXISTS Fake_Sonde(
+               id_FakeSonde INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+               name_Sonde TEXT NOT NULL);"""
+               )
 
 
 
@@ -17,8 +20,8 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS Fake_Releve(
                Fake_temp FLOAT,
                Fake_humidite FLOAT,
                Fake_pression FLOAT,
-               id_Sonde INTEGER NOT NULL, 
-               FOREIGN KEY(id_Sonde) REFERENCES Fake_Sonde(id_Sonde));"""
+               id_FakeSonde INTEGER NOT NULL,
+               FOREIGN KEY(id_FakeSonde) REFERENCES Fake_Sonde(id_FakeSonde));"""
                )
 connection.commit()
 connection.close()
@@ -52,8 +55,6 @@ def home():
 
    return flask.render_template('index.html', releve=list_releve, sonde=list_sonde)
 
-
-# Faire un form pour add
 @app.route('/add/sonde', methods=['GET', 'POST'])
 def add():
    if flask.request.method == 'POST':
@@ -76,18 +77,20 @@ def add_releve():
 
       connection = sqlite3.connect('Fake_StationMeteo.db')
 
-      nb_releves = flask.request.values.get('releves')
+      nb_releves = flask.request.values.get('releve')
       id_Sonde = flask.request.values.get('sonde')
-      
+      nb_releves = int(nb_releves)
+      print(type(nb_releves))
+
       for i in range(nb_releves):
          temp = randint(-10, 50)
          humidite = randint(0, 100)
          pression = randint(1000, 1050)
 
          cursor = connection.cursor()
-         cursor.execute('INSERT INTO Fake_Releve (Fake_temp, Fake_humidite, Fake_pression) VALUES (?,?,?)',(temp, humidite, pression))
+         cursor.execute('INSERT INTO Fake_Releve (Fake_temp, Fake_humidite, Fake_pression, id_FakeSonde) VALUES (?,?,?,?)',(temp, humidite, pression, id_Sonde))
          connection.commit()
-         connection.close()
+      connection.close()
 
       return flask.redirect('/')
    else:
@@ -114,42 +117,3 @@ def delete_Sonde(id):
    connection.close()
 
    return flask.redirect('/')
-
-@app.route('/api/dogs', methods=['GET'])
-def get_dogs():
-   connection = sqlite3.connect('Fake_StationMeteo.db')
-   cursor = connection.cursor()
-   cursor.execute('SELECT * FROM dogs')
-   dogs = cursor.fetchall()
-   connection.close()
-
-   list_dogs = []
-
-   for dog in dogs:
-      list_dogs.append({
-         "id": dog[0],
-         "name": dog[1],
-         "age": dog[2],
-         "race": dog[3],
-      }) 
-
-   return flask.jsonify(list_dogs)
-
-@app.route('/api/dogs', methods=['POST'])
-def add_dog():
-   if flask.request.method == 'POST':
-      name = flask.request.json['name']
-      age = flask.request.json['age']
-      race = flask.request.json['race']
-
-
-      connection = sqlite3.connect('Fake_StationMeteo.db')
-
-      cursor = connection.cursor()
-      cursor.execute('INSERT INTO dogs (name, age, race) VALUES ("' + name + '", "' + str(age) + '", "' + race + '")')
-      connection.commit()
-      connection.close()
-
-      return flask.jsonify({
-         "message": "Dog added successfully"
-      })
