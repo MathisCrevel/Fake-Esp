@@ -7,6 +7,7 @@ app = flask.Flask(__name__, template_folder='views')
 connection = sqlite3.connect('Fake_StationMeteo.db')
 
 cursor = connection.cursor()
+
 cursor.execute("""CREATE TABLE IF NOT EXISTS Fake_Sonde(
                id_FakeSonde INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                name_Sonde TEXT NOT NULL);"""
@@ -88,8 +89,11 @@ def add_releve():
          pression = randint(1000, 1050)
 
          cursor = connection.cursor()
-         cursor.execute('INSERT INTO Fake_Releve (Fake_temp, Fake_humidite, Fake_pression, id_FakeSonde) VALUES (?,?,?,?)',(temp, humidite, pression, id_Sonde))
-         connection.commit()
+         cursor.execute('SELECT id_FakeSonde FROM Fake_Sonde WHERE id_FakeSonde = ' + id_Sonde)
+         reponse = cursor.fetchall()
+         if reponse: 
+            cursor.execute('INSERT INTO Fake_Releve (Fake_temp, Fake_humidite, Fake_pression, id_FakeSonde) VALUES (?,?,?,?)',(temp, humidite, pression, id_Sonde))
+            connection.commit()
       connection.close()
 
       return flask.redirect('/')
@@ -113,6 +117,7 @@ def delete_Sonde(id):
 
    cursor = connection.cursor()
    cursor.execute('DELETE FROM Fake_Sonde WHERE id_FakeSonde = ' + id)
+   cursor.execute('DELETE FROM Fake_Releve WHERE id_FakeSonde = ' + id)
    connection.commit()
    connection.close()
 
