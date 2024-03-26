@@ -1,0 +1,20 @@
+import random
+import requests
+import time
+
+while True:
+    
+    temp = random.randint(-20, 40)
+    humidite = random.randint(0, 100)
+    pression = random.randint(900, 1100)
+    id = 1
+    dico = {"temp": temp, "humidite": humidite, "pression": pression, "id": id}
+    
+    response = requests.post('http://127.0.0.1:5000/writedata', json={'value': dico})
+
+   
+    if response.status_code == 200:
+        print('Value sent successfully:', dico)
+    else:
+        print('Failed to send value:', response.text)
+    time.sleep(5)

@@ -1,6 +1,8 @@
 import flask
 import sqlite3
 from random import randint
+import json
+from flask import request 
 
 app = flask.Flask(__name__, template_folder='views')
 
@@ -122,3 +124,28 @@ def delete_Sonde(id):
    connection.close()
 
    return flask.redirect('/')
+
+
+@app.route('/writedata', methods=['POST'])
+def write_data():
+    connection = sqlite3.connect('Fake_StationMeteo.db')
+    cursor = connection.cursor()
+    data = request.get_json()
+    print("Received JSON data:")
+    with open('releve.json', 'w') as json_file :
+      json.dump(data, json_file)
+    with open('releve.json', 'r') as json_file:
+      data = json.load(json_file)
+      print(data)
+      cursor.execute('SELECT id_FakeSonde FROM Fake_Sonde WHERE id_FakeSonde = ' + str(data ['value']['id']))
+      reponse = cursor.fetchall()
+      if reponse: 
+         cursor.execute('INSERT INTO Fake_Releve (Fake_temp, Fake_humidite, Fake_pression, id_FakeSonde) VALUES (?, ?, ?, ?)', (data['value']['temp'], data['value']['humidite'], data['value']['pression'], data ['value']['id']))
+      else :
+         print('La sonde '+ str(id) + 'n hexiste pas !')
+         #cursor.execute('INSERT INTO Fake_Releve (Fake_temp, Fake_humidite, Fake_pression) VALUES (?, ?, ?)', (releve['value'][0], releve['value'][0], releve['value'][0]))
+
+    connection.commit()
+    connection.close()
+        # Write data to file
+    return "JSON data received successfully"
