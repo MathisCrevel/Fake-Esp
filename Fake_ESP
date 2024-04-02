@@ -14,7 +14,7 @@ while True:
 
    
     if response.status_code == 200:
-        print('Value sent successfully:', dico)
+        print('Valeur envoyée avec succés !:', dico)
     else:
-        print('Failed to send value:', response.text)
+        print("Erreur lors de l'envoie :", response.text)
     time.sleep(5)

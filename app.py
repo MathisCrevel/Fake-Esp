@@ -147,5 +147,5 @@ def write_data():
 
     connection.commit()
     connection.close()
-        # Write data to file
+
     return "JSON data received successfully"
