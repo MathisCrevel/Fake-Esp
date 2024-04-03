@@ -140,7 +140,7 @@ def write_data():
       cursor.execute('SELECT id_FakeSonde FROM Fake_Sonde WHERE id_FakeSonde = ' + str(data ['value']['id']))
       reponse = cursor.fetchall()
       if reponse: 
-         cursor.execute('INSERT INTO Fake_Releve (Fake_temp, Fake_humidite, Fake_pression, id_FakeSonde) VALUES (?, ?, ?, ?)', (data['value']['temp'], data['value']['humidite'], data['value']['pression'], data ['value']['id']))
+         cursor.execute("""INSERT INTO Fake_Releve (Fake_temp, Fake_humidite, Fake_pression, id_FakeSonde) VALUES (?, ?, ?, ?)""", (data['value']['temp'], data['value']['humidite'], data['value']['pression'], data ['value']['id']))
       else :
          print('La sonde '+ str(id) + 'n hexiste pas !')
          #cursor.execute('INSERT INTO Fake_Releve (Fake_temp, Fake_humidite, Fake_pression) VALUES (?, ?, ?)', (releve['value'][0], releve['value'][0], releve['value'][0]))
@@ -148,4 +148,4 @@ def write_data():
     connection.commit()
     connection.close()
 
-    return "JSON data received successfully"
+    return "JSON data recu avec succés !"
